@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { fetchPlayers } from "../api";
+import { Link } from "react-router-dom";
 
-const Allplayers = () => {
+function Allplayers() {
   const [players, setPlayers] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const getPlayers = async () => {
-      const data = await fetchPlayers();
-      setPlayers(data);
-    };
-
-    getPlayers();
+    fetchPlayers().then((data) => setPlayers(data));
   }, []);
+
+  const filteredPlayers = players.filter((player) =>
+    player.name.includes(search)
+  );
 
   return (
     <div>
-      {players.map((player) => (
+      <input
+        type="text"
+        placeholder="Search"
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      {filteredPlayers.map((player) => (
         <div key={player.id}>
-          <h2>{player.name}</h2>
-          <p>{player.position}</p>
+          <h3>{player.name}</h3>
+          <Link to={`/players/${player.id}`}>View Details</Link>
         </div>
       ))}
     </div>
   );
-};
+}
 
 export default Allplayers;
