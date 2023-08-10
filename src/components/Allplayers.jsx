@@ -1,34 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { fetchPlayers } from "../api";
-import { Link } from "react-router-dom";
+import { fetchPlayers } from "../API";
 
-function Allplayers() {
+const AllPlayers = () => {
   const [players, setPlayers] = useState([]);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchPlayers().then((data) => setPlayers(data));
+    const getPlayers = async () => {
+      const fetchedPlayers = await fetchPlayers();
+      setPlayers(fetchedPlayers);
+    };
+    getPlayers();
   }, []);
-
-  const filteredPlayers = players.filter((player) =>
-    player.name.includes(search)
-  );
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search"
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      {filteredPlayers.map((player) => (
-        <div key={player.id}>
-          <h3>{player.name}</h3>
-          <Link to={`/players/${player.id}`}>View Details</Link>
-        </div>
-      ))}
+      {players.map((player) => {
+        return (
+          <div key={player.id}>
+            <h3>{player.name}</h3>
+            <p>{player.age}</p>
+            <p>{player.breed}</p>
+            <p>{player.description}</p>
+            <img src={player.image} alt={player.name} />
+          </div>
+        );
+      })}
     </div>
   );
-}
+};
 
-export default Allplayers;
+export default AllPlayers;

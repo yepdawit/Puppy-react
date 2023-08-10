@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { fetchPlayers } from "../API";
+import { useParams } from "react-router-dom";
+import { deletePlayer, fetchSinglePlayer } from "../API";
 
-const Allplayers = () => {
-  const [players, setPlayers] = useState([]);
+const SinglePlayer = () => {
+  const [player, setPlayer] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
-    const getPlayers = async () => {
-      const data = await fetchPlayers();
-      setPlayers(data);
-    };
+    fetchSinglePlayer(id).then((data) => setPlayer(data));
+  }, [id]);
 
-    getPlayers();
-  }, []);
+  const handleDelete = () => {
+    deletePlayer(id);
+  };
 
   return (
     <div>
-      {players.map((player) => (
-        <div key={player.id}>
-          <Link to={`/${player.id}`}>
-            <h2>{player.name}</h2>
-          </Link>
-          <p>{player.position}</p>
-        </div>
-      ))}
+      {player && (
+        <>
+          <h3>{player.name}</h3>
+          <button onClick={handleDelete}>Delete</button>
+        </>
+      )}
     </div>
   );
 };
 
-export default Allplayers;
+export default SinglePlayer;

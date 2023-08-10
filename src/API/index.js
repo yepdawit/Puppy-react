@@ -1,40 +1,44 @@
-export const fetchPlayers = async () => {
-  const response = await fetch(
-    `https://fsa-puppy-bowl.herokuapp.com/api/2302-acc-et-web-pt-b`
+const cohortName = "2302-ACC-ET-PT-B";
+const APIURL = `https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}`;
 
-return response.json();
+export const fetchPuppies = async () => {
+  try {
+    const { data } = await axios.get(`${APIURL}/puppies`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export const fetchPlayer = async (id) => {
-    const response = await fetch(
-        `https://fsa-puppy-bowl.herokuapp.com/api/2302-acc-et-web-pt-b/${id}`
-    );
-    return response.json();
-    }
+export const fetchSinglePlayer = async (id) => {
+  const response = await fetch(`${APIURL}/puppies/${id}`);
+  return await response.json();
+};
 
-    export const createPlayer = async (player) => {
+export const createPlayer = async (player) => {
+  const response = await fetch(`${APIURL}/puppies`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(player),
+  });
+  return await response.json();
+};
+export const deletePlayer = async (id) => {
+  const response = await fetch(`${APIURL}/puppies/${id}`, {
+    method: "DELETE",
+  });
+  return await response.json();
+};
 
-        const response = await fetch(
-            `https://fsa-puppy-bowl.herokuapp.com/api/2302-acc-et-web-pt-b`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(player),
-            }
-        );
-        return response.json();
-    }
-
-    export  const deletePlayer = async (id) => {
-        const response = await fetch(
-            `https://fsa-puppy-bowl.herokuapp.com/api/2302-acc-et-web-pt-b/${id}`,
-            {
-                method: "DELETE",
-            }
-        );
-        return response.json();
-    }
-
-    
+export const updatePlayer = async (id, player) => {
+  const response = await fetch(`${APIURL}/puppies/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(player),
+  });
+  return await response.json();
+};
