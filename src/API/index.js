@@ -1,44 +1,26 @@
 const cohortName = "2302-ACC-ET-PT-B";
-const APIURL = `https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}`;
+const BaseURL = `https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}`;
 
-export const fetchPuppies = async () => {
+export const fetchAllPlayers = async () => {
   try {
-    const { data } = await axios.get(`${APIURL}/puppies`);
-    return data;
+    const response = await fetch(`${BaseURL}/players`);
+    if (!response.ok) throw new Error("Failed to fetch players");
+    const result = await response.json();
+    if (!result.data || !result.data.players)
+      throw new Error("Players not found in response");
+    return result.data.players;
   } catch (error) {
     console.log(error);
+    return []; // Return an empty array if something goes wrong
   }
 };
 
 export const fetchSinglePlayer = async (id) => {
-  const response = await fetch(`${APIURL}/puppies/${id}`);
-  return await response.json();
-};
-
-export const createPlayer = async (player) => {
-  const response = await fetch(`${APIURL}/puppies`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(player),
-  });
-  return await response.json();
-};
-export const deletePlayer = async (id) => {
-  const response = await fetch(`${APIURL}/puppies/${id}`, {
-    method: "DELETE",
-  });
-  return await response.json();
-};
-
-export const updatePlayer = async (id, player) => {
-  const response = await fetch(`${APIURL}/puppies/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(player),
-  });
-  return await response.json();
+  try {
+    const response = await fetch(`${BaseURL}/players/${id}`);
+    const result = await response.json();
+    return result.data.player;
+  } catch (error) {
+    console.log(error);
+  }
 };

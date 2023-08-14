@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deletePlayer, fetchSinglePlayer } from "../API";
+import { fetchSinglePlayer } from "../API";
+import React, { useState, useEffect } from "react";
 
 const SinglePlayer = () => {
+  const { id } = useParams(); // Get the ID from the URL
   const [player, setPlayer] = useState(null);
-  const { id } = useParams();
 
   useEffect(() => {
-    fetchSinglePlayer(id).then((data) => setPlayer(data));
+    const fetchPlayer = async () => {
+      const fetchedPlayer = await fetchSinglePlayer(id);
+      setPlayer(fetchedPlayer);
+    };
+    fetchPlayer();
   }, [id]);
 
-  const handleDelete = () => {
-    deletePlayer(id);
-  };
+  if (!player) return <div>Loading...</div>; // Add a loading state if the player is null
 
   return (
     <div>
-      {player && (
-        <>
-          <h3>{player.name}</h3>
-          <button onClick={handleDelete}>Delete</button>
-        </>
-      )}
+      <h4>{player.name}</h4>
+      <p>{player.id}</p>
+      <p>{player.breed}</p>
+      <p>{player.status}</p>
+      <img src={player.imageUrl} alt={`${player.name}`} />
     </div>
   );
 };
